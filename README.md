@@ -9,7 +9,7 @@ cache expires in seconds, default is 60s * 5.
 
 ## Requirement
 
-a **cache** DI must be set before this middleware use:
+a **cache** DI must be set before use this middleware:
 
 ```go
 	import (
@@ -25,7 +25,7 @@ a **cache** DI must be set before this middleware use:
 ## Usage
 
 ### global
-Set as the last middleware of baa:
+Set as the **last middleware** of baa:
 ```go
 	if baa.Env == baa.PROD {
 		// Gzip
@@ -37,6 +37,7 @@ Set as the last middleware of baa:
 		}))
 	}
 ```
+Or after request/content processing middlewares.
 
 ### with router
 
