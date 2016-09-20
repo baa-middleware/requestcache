@@ -26,6 +26,12 @@ func Middleware(opt Option) baa.HandlerFunc {
 	}
 
 	return func(c *baa.Context) {
+		// not enabled
+		if !opt.Enabled {
+			c.Next()
+			return
+		}
+
 		// only cache get request
 		if c.Req.Method != http.MethodGet {
 			c.Next()

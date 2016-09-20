@@ -3,9 +3,13 @@ Cache Get Request
 
 ## Options
 
+### Enabled
+
+cache enabled or not, default is `false`.
+
 ### Expires
 
-cache expires in seconds, default is 60s * 5.
+cache expires in seconds, default is `60 * 5`s.
 
 ## Requirement
 
@@ -33,6 +37,7 @@ Set as the **last middleware** of baa:
 
 		// Request Cache
 		b.Use(requestcache.Middleware(requestcache.Option{
+			Enabled: true,
 			Expires: requestcache.DefaultExpires,
 		}))
 	}
@@ -43,6 +48,7 @@ Or after request/content processing middlewares.
 
 ```go
 	cache := requestcache.Middleware(requestcache.Option{
+		Enabled: !b.Debug(),
 		Expires: requestcache.DefaultExpires,
 	})
 
@@ -55,6 +61,7 @@ Or after request/content processing middlewares.
 
 ```go
 	cache1 := requestcache.Middleware(requestcache.Option{
+		Enabled: !b.Debug(),
 		Expires: 60 * 10,
 	})
 
@@ -63,6 +70,7 @@ Or after request/content processing middlewares.
 	}, cache1)
 
 	cache2 := requestcache.Middleware(requestcache.Option{
+		Enabled: !b.Debug(),
 		Expires: 60 * 30,
 	})
 

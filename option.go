@@ -7,5 +7,6 @@ const (
 
 // Option ...
 type Option struct {
+	Enabled bool
 	Expires int64
 }
