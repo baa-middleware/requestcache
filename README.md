@@ -7,6 +7,21 @@ Cache Get Request
 
 cache expires in seconds, default is 60s * 5.
 
+## Requirement
+
+a **cache** DI must be set before this middleware use:
+
+```go
+	import (
+		"github.com/go-baa/cache"
+		_ "github.com/go-baa/cache/redis"
+	)
+
+	b.SetDI("cache", cache.New(cache.Options{
+		// ...
+	}))
+```
+
 ## Usage
 
 ### global
