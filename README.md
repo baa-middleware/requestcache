@@ -35,7 +35,7 @@ Set as the last middleware of baa:
 	}, cache)
 ```
 
-### different Options
+### different options
 
 ```go
 	cache1 := requestcache.Middleware(requestcache.Option{
@@ -47,7 +47,7 @@ Set as the last middleware of baa:
 	}, cache1)
 
 	cache2 := requestcache.Middleware(requestcache.Option{
-		Expires: 60 * 10,
+		Expires: 60 * 30,
 	})
 
 	b.Group("/some-prefix-2", func() {
