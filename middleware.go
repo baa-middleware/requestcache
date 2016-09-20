@@ -13,19 +13,23 @@ type response struct {
 	Body   []byte
 }
 
+var (
+	headerKey = "X-Request-Cache"
+)
+
 // Middleware baa middleware func
 func Middleware(opt Option) baa.HandlerFunc {
+	// get expires option
+	var expires = opt.Expires
+	if expires == 0 {
+		expires = DefaultExpires
+	}
+
 	return func(c *baa.Context) {
 		// only cache get request
 		if c.Req.Method != http.MethodGet {
 			c.Next()
 			return
-		}
-
-		// get expires option
-		var expires = opt.Expires
-		if expires == 0 {
-			expires = DefaultExpires
 		}
 
 		// prepare cache key
@@ -36,23 +40,22 @@ func Middleware(opt Option) baa.HandlerFunc {
 		cacher := c.DI("cache").(cache.Cacher)
 		val := response{}
 		if err := cacher.Get(key, &val); err == nil {
-			c.Baa().Logger().Printf("[RequestCache]: hit [%s]\n", url)
-
+			if c.Baa().Debug() {
+				c.Baa().Logger().Printf("[RequestCache]: hit [%s]\n", url)
+			}
 			for k, v := range val.Header {
 				for j := range v {
 					c.Resp.Header().Set(k, v[j])
 				}
 			}
+			c.Resp.Header().Set(headerKey, "hit")
 			c.Resp.Write(val.Body)
-			c.Break()
 			return
 		}
 
 		// replace writer
 		writer := c.Resp.GetWriter()
-		ghostWriter := &ghostWriter{
-			Writer: writer,
-		}
+		ghostWriter := &ghostWriter{Writer: writer}
 		c.Resp.SetWriter(ghostWriter)
 
 		c.Next()
@@ -79,7 +82,9 @@ func Middleware(opt Option) baa.HandlerFunc {
 			return
 		}
 
-		c.Baa().Logger().Printf("[RequestCache]: miss [%s]\n", url)
+		if c.Baa().Debug() {
+			c.Baa().Logger().Printf("[RequestCache]: miss [%s]\n", url)
+		}
 
 		// prepare cache content
 		val = response{
@@ -105,7 +110,10 @@ func Middleware(opt Option) baa.HandlerFunc {
 			c.Error(err)
 			return
 		}
-		c.Baa().Logger().Printf("[RequestCache]: set [%s]\n", url)
+
+		if c.Baa().Debug() {
+			c.Baa().Logger().Printf("[RequestCache]: set [%s]\n", url)
+		}
 	}
 }
 
