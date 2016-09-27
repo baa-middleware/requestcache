@@ -9,7 +9,7 @@ cache enabled or not, default is `false`.
 
 ### Expires
 
-cache expires in seconds, default is `60 * 5`s.
+cache expires in seconds, default is `60 * 10`s.
 
 ### CacheControl
 
