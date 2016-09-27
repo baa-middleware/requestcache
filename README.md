@@ -11,6 +11,17 @@ cache enabled or not, default is `false`.
 
 cache expires in seconds, default is `60 * 5`s.
 
+### CacheControl
+
+set response Cache-Control header, default is `""`.
+
+### ContextRelated
+
+default is `false`.
+
+if set `true`, baa context data will be used as request cache key.
+data set to baa context by using `c.Set("foo", "bar")` will be json marshaled as part of cache key.
+
 ## Requirement
 
 a **cache** DI must be set before use this middleware:

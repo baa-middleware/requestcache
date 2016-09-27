@@ -2,15 +2,18 @@ package requestcache
 
 import (
 	"encoding/gob"
+	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/go-baa/cache"
 	"gopkg.in/baa.v1"
 )
 
 type response struct {
-	Header map[string][]string
-	Body   []byte
+	Header  map[string][]string
+	Body    []byte
+	Created time.Time
 }
 
 var (
@@ -38,8 +41,19 @@ func Middleware(opt Option) baa.HandlerFunc {
 			return
 		}
 
+		// set cache header
+		if opt.CacheControl != "" {
+			c.Resp.Header().Set("Cache-Control", opt.CacheControl)
+		}
+
 		// prepare cache key
 		url := c.URL(true)
+		if opt.ContextRelated {
+			enc, err := json.Marshal(c.Gets())
+			if err == nil {
+				url = url + ":" + string(enc)
+			}
+		}
 		key := "RequestCache:" + md5Encode(url)
 
 		// read from cache
@@ -49,6 +63,7 @@ func Middleware(opt Option) baa.HandlerFunc {
 			if c.Baa().Debug() {
 				c.Baa().Logger().Printf("[RequestCache]: hit [%s]\n", url)
 			}
+
 			for k, v := range val.Header {
 				for j := range v {
 					c.Resp.Header().Set(k, v[j])
@@ -94,8 +109,9 @@ func Middleware(opt Option) baa.HandlerFunc {
 
 		// prepare cache content
 		val = response{
-			Header: make(map[string][]string),
-			Body:   ghostWriter.Content,
+			Header:  make(map[string][]string),
+			Body:    ghostWriter.Content,
+			Created: time.Now(),
 		}
 
 		// copy header
