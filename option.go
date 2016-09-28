@@ -9,6 +9,6 @@ const (
 type Option struct {
 	Enabled        bool
 	Expires        int64
-	CacheControl   string
+	Headers        map[string]string
 	ContextRelated bool
 }

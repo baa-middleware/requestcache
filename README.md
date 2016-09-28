@@ -11,9 +11,9 @@ cache enabled or not, default is `false`.
 
 cache expires in seconds, default is `60 * 10`s.
 
-### CacheControl
+### Headers
 
-set response Cache-Control header, default is `""`.
+set response headers, default is `nil`.
 
 ### ContextRelated
 

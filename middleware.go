@@ -41,9 +41,11 @@ func Middleware(opt Option) baa.HandlerFunc {
 			return
 		}
 
-		// set cache header
-		if opt.CacheControl != "" {
-			c.Resp.Header().Set("Cache-Control", opt.CacheControl)
+		// set headers
+		if opt.Headers != nil {
+			for k, v := range opt.Headers {
+				c.Resp.Header().Set(k, v)
+			}
 		}
 
 		// prepare cache key
