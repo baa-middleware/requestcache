@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-baa/baa"
 	"github.com/go-baa/cache"
-	"gopkg.in/baa.v1"
 )
 
 type response struct {
